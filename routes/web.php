@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QuestionController;
@@ -14,9 +13,9 @@ Route::get('/pcr', function () {
     return 'Selamat Datang di Website Kampus PCR!';
 });// route tidak termasuk ke dalam kontroler
 
-//Route::get('/mahasiswa', function () {
-    //return 'Halo Mahasiswa';
-//})->name('mahasiswa.show');
+Route::get('/mahasiswa', function () {
+    return 'Halo Mahasiswa';
+})->name('mahasiswa.show');
 
 Route::get('/nama/{param1}', function ($param1) {
     return 'Nama saya: '.$param1;
