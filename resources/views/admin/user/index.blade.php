@@ -1,21 +1,4 @@
 
-<!--
-
-=========================================================
-* Volt Pro - Premium Bootstrap 5 Dashboard
-=========================================================
-
-* Product Page: https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard
-* Copyright 2021 Themesberg (https://www.themesberg.com)
-* License (https://themesberg.com/licensing)
-
-* Designed and coded by https://themesberg.com
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Please contact us to request a removal.
-
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -105,14 +88,14 @@
                     <p class="mb-0">Form untuk menambahkan pelanggan baru</p>
                 </div>
                 <div>
-                    <a href="pelanggan.index"
+                    <a href="User.index"
                         class="btn btn-succes "><i class="far fa-question-circle me-1"></i> Tambah Pelanggan </a>
                 </div>
             </div>
         </div>
 
         <div class="row">
-<form action="{{route('pelanggan.store')}}" method="POST">
+<form action="{{route('User.store')}}" method="POST">
     @csrf
     <div class="card border-0 shadow components-section">
         <div class="card-body">
