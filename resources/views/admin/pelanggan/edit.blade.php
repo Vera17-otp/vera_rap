@@ -274,11 +274,10 @@
 <div class="py-4">
 <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-@@ -361,39 +92,5 @@
+@@ -361,39 +92,4 @@
 </div>
 </div>
 </div>
-@endsection
 
         <footer class="bg-white rounded shadow p-5 mb-4 mt-4">
             <div class="row">
@@ -315,3 +314,4 @@
 </body>
 
 </html>
+@endsection

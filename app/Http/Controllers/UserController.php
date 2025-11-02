@@ -14,9 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-          $data['dataUser'] = User::all();
-		return view('admin.pelanggan.index',$data);
-
+        $data['dataUser'] = User::all();
+        return view('admin.user.index', $data);
     }
 
     /**
@@ -24,7 +23,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        Return view('admin.user.create');
+        return view('admin.user.create');
     }
 
     /**
@@ -32,15 +31,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data['name'] = $request->Name;
-        $data['email']  = $request->Email;
-        $data['password']   =Hash::make($request->password);
-        $data['confirm_password']      = $request->confirm_password;
-
+        $data['name'] = $request->name;
+        $data['email']      = $request->email;
+        $data['password'] = Hash::make($request->password);
 
         User::create($data);
 
-        return redirect()->back()->with('success', 'Penambahan Data Berhasil!');
+        return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
     }
 
     /**
@@ -56,7 +53,8 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data['dataUser'] = User::findOrFail($id);
+        return view('admin.user.edit', $data);
     }
 
     /**
@@ -64,7 +62,15 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $id = $id;
+        $user    = User::findOrFail($id);
+
+        $user->name = $request->name;
+        $user->email      = $request->email;
+        $user->password      = $request->password;
+
+        $user->save();
+        return redirect()->route('user.index')->with('success', 'Perubahan Data Berhasil!');
     }
 
     /**
@@ -72,6 +78,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $id    = User::findOrFail($id);
+        $id->delete();
+
+        return redirect()->route('user.index')->with('success', 'Data Berhasil Dihapus');
     }
 }
