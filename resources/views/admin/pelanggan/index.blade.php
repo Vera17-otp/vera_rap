@@ -346,6 +346,8 @@
             </tr>
         </thead>
         <tbody>
+
+            
             @foreach($dataPelanggan as $pelanggan)
             <tr>
                 <td>{{ $pelanggan->first_name }}</td>
