@@ -337,22 +337,25 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nama</th>
-                <th>Alamat</th>
-                <th>No Telepon</th>
-                <th>Aksi</th>
+                <th>first_name</th>
+                <th>last_name</th>
+                <th>birthday</th>
+                <th>gender</th>
+                <th>email</th>
+                  <th>phone</th>
             </tr>
         </thead>
         <tbody>
             @foreach($dataPelanggan as $pelanggan)
             <tr>
-                <td>{{ $pelanggan->id }}</td>
-                <td>{{ $pelanggan->nama }}</td>
-                <td>{{ $pelanggan->alamat }}</td>
-                <td>{{ $pelanggan->telepon }}</td>
+                <td>{{ $pelanggan->first_name }}</td>
+                <td>{{ $pelanggan->last_name }}</td>
+                <td>{{ $pelanggan->birthday}}</td>
+                <td>{{ $pelanggan->gender }}</td>
+                <td>{{ $pelanggan->email }}</td>
+                 <td>{{ $pelanggan->phone }}</td>
                 <td>
-                    <form action="{{ route('pelanggan.destroy', $pelanggan->id) }}" method="POST">
+                    <form action="" method="POST">
                         @csrf
                         @method('DELETE')
                         <button class="btn btn-danger btn-sm">Hapus</button>
@@ -411,5 +414,5 @@
 </body>
 
 </html>
-        
+
 

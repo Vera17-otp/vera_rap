@@ -15,7 +15,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard
 
 Route::resource('user', UserController::class);
 
-Route::resource('pelanggan', PelangganController::class);
 Route::get('/', function () {
     return view('welcome');
 
