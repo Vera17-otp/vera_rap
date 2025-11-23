@@ -8,7 +8,7 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-	<link rel="stylesheet" href="{{ asset('assets/css/custom-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('asset/css/custom-style.css') }}">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -57,9 +57,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-
-           <img src="{{ asset('assets/images/Pertanahan.jpg') }}" alt="Logo" class  >
-           <a class="navbar-brand font-custom" href="#">My Laravel app</a>
+            <img class="" src="{{ asset('asset/images/images.jpg') }}" alt="Logo">
+            <a class="navbar-brand" href="#">My Laravel App</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -86,8 +85,8 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <h1 class="display-6 mb-2 font-custom">{{ $username }}</h1>
-            <p class="lead mb-0">{{ $last_login }} </p>
+            <h1 class="display-6 mb-2 font-custom"> {{ $username }} </h1>
+            <p class="lead mb-0"> {{ $last_login }} </p>
         </div>
     </section>
 
@@ -147,9 +146,9 @@
                             <span class="badge text-bg-danger">Bootstrap</span>
                         </div>
                         <ul class="list-group mb-3">
-                            <li class="list-group-item">Item Satu</li>
-                            <li class="list-group-item">Item Dua</li>
-                            <li class="list-group-item">Item Tiga</li>
+                            @foreach ($list_pendidikan as $item)
+                                <li class="list-group-item"> {{ $item }} </li>
+                            @endforeach
                         </ul>
                         <div class="p-3 border rounded">
                             <strong>Div umum</strong> — ini hanya <em>container</em> untuk konten bebas.
@@ -167,34 +166,41 @@
                         <h5 class="card-title">Form Pertanyaan</h5>
 
                         @if ($errors->any())
-                            <div class="alert alert-dager">
+                            <div class="alert alert-danger">
                                 <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
+                                    @foreach ($errors->all() as $errors)
+                                        <li>{{ $errors }}</li>
                                     @endforeach
                                 </ul>
                             </div>
                         @endif
+
+                        @if (session('info_terimakasih'))
+                            <div class="alert alert-info">
+                                {!! session('info_terimakasih') !!}
+                            </div>
+                        @endif
+
                         <form action="{{ route('question.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="nama" class="form-label">Nama</label>
-                                <input type="text" class="form-control" name="nama">
+                                <input type="text" class="form-control" name="nama" value="{{ old('nama') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="text" class="form-control" name="email">
+                                <input type="text" class="form-control" name="email" "{{ old('email') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="pertanyaan" class="form-label">Pertanyaan</label>
-                                <textarea class="form-control" rows="4" name="pertanyaan"></textarea>
+                                <textarea class="form-control" rows="4" name="pertanyaan">"{{ old('pertanyaan') }}"</textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Kirim Pertanyaan</button>
                         </form>
                     </div>
                 </div>
-
                 {{-- Alerts --}}
+
                 <div class="card ">
                     <div class="card-body">
                         <h3 class="h5 mb-3">Alerts</h3>
@@ -256,11 +262,11 @@
                             </table>
                         </div>
                         <p class="text-muted small mb-0">Tambahkan <code>.table-striped</code> atau
-                            <code>.table-bordered</code> sesuai kebutuhan.
-                        </p>
+                            <code>.table-bordered</code> sesuai kebutuhan.</p>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 

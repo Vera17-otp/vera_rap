@@ -17,9 +17,9 @@ class CreateFirstUser extends Seeder
         User::factory()->count(1000)->create();
 
         User::create([
-            'name'     => 'Arya',
-            'email'    => 'arya@gmail.com',
-            'password' => Hash::make('Arya'),
+            'name'     => 'Vera',
+            'email'    => 'verazakia@gmail.com',
+            'password' => Hash::make('Cianjur17'),
         ]);
     }
 }

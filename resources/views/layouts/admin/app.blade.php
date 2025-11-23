@@ -3,8 +3,6 @@
 <html lang="en">
 
 <head>
-
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!-- Primary Meta Tags -->
     <title>Volt - Free Bootstrap 5 Dashboard</title>

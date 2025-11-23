@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -10,21 +11,12 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filterableColumns = ['email_verified_at'];
+        // Gunakan paginate agar bisa memakai links() dan appends()
+        $data['dataUser'] = User::paginate(10);
 
-        // Kolom yang boleh dicari
-        $searchableColumns = ['name', 'email'];
-
-        // Ambil data dengan filter + search
-        $pageData['dataUser'] = User::filter($request, $filterableColumns)
-            ->search($request, $searchableColumns)
-            ->orderBy('id', 'desc')
-            ->paginate(10)
-            ->withQueryString();
-
-        return view('Admin.User.index', $pageData);
+        return view('admin.user.index', $data);
     }
 
     /**
@@ -32,7 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('Admin.User.create');
+        return view('admin.user.create');
     }
 
     /**
@@ -40,26 +32,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $data['password'] = Hash::make($data['password']);
+        $data['name']     = $request->name;
+        $data['email']    = $request->email;
+        $data['password'] = Hash::make($request->password);
 
         User::create($data);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil dibuat.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
     }
 
     /**
@@ -67,8 +46,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = User::findOrFail($id);
-        return view('Admin.User.edit', compact('user'));
+        $data['dataUser'] = User::findOrFail($id);
+
+        return view('admin.user.edit', $data);
     }
 
     /**
@@ -78,19 +58,17 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // P2: password wajib diisi saat edit
-        $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        $user->name  = $request->name;
+        $user->email = $request->email;
 
-        $data['password'] = Hash::make($data['password']);
+        // update password hanya jika diisi
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
 
-        $user->update($data);
+        $user->save();
 
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil diupdate.');
+        return redirect()->route('user.index')->with('success', 'Perubahan Data Berhasil!');
     }
 
     /**
@@ -101,7 +79,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil dihapus.');
+        return redirect()->route('user.index')->with('success', 'Data Berhasil Dihapus');
     }
 }
