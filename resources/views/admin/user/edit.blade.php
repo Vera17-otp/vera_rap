@@ -1,79 +1,76 @@
- @extends('layouts.admin.app')
+@extends('layouts.admin.app')
+
 @section('content')
-        <div class="py-4">
-            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                    <li class="breadcrumb-item">
-                        <a href="#">
-                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#">User</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Tambah User</li>
-                </ol>
-            </nav>
-            <div class="d-flex justify-content-between w-100 flex-wrap">
-                <div class="mb-3 mb-lg-0">
-                    @csrf
-                    <h1 class="h4">Edit User </h1>
-                    <p class="mb-0">Form untuk mengedit data User baru.</p>
-                </div>
-                <div>
-                    <a href="" class="btn btn-primary"><i class="far fa-question-circle me-1"></i> Kembali</a>
-                </div>
+    <div class="mt-4">
+        <h4>Edit Data Pelanggan</h4>
+
+        @if (session('success'))
+            <div class="alert alert-success mt-3">
+                {{ session('success') }}
             </div>
-        </div>
+        @endif
 
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div class="card border-0 shadow components-section">
-                    <div class="card-body">
-                        <form action="{{ route('user.update',$dataUser->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="row mb-4">
-                                <div class="col-lg-4 col-sm-6">
-                                     <!--Nama lengkap -->
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Nama Lengkap</label>
-                                        <input type="text" id="name" class="form-control" required name="name" value="{{ $dataUser->name }}">
-                                    </div>
+        <form action="{{ route('pelanggan.update', $dataPelanggan->pelanggan_id) }}" method="POST"
+            enctype="multipart/form-data" class="mt-4">
+            @csrf
+            @method('PUT')
 
-                                    <!-- Email -->
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" id="email" class="form-control" required name="email" value="{{ $dataUser->email }}">
-                                    </div>
-                                </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" value="{{ $dataPelanggan->first_name }}" class="form-control">
+                </div>
 
+                <div class="col-md-6">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" value="{{ $dataPelanggan->last_name }}" class="form-control">
+                </div>
 
-                                <div class="col-lg-4 col-sm-12">
-                                    <!-- password -->
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">password</label>
-                                        <input type="password" id="password" class="form-control" required name="password" value="{{ $dataUser->password }}">
-                                    </div>
+                <div class="col-md-4 mt-3">
+                    <label>Birthday</label>
+                    <input type="date" name="birthday" value="{{ $dataPelanggan->birthday }}" class="form-control">
+                </div>
 
-                                    <!-- confirm password -->
-                                    <div class="mb-3">
-                                        <label for="password_confimation" class="form-label"> confirm password</label>
-                                        <input type="password" id="password_confimation" class="form-control" name="password_confimation" value="{{ $dataUser->password_confimation }}">
-                                    </div>
+                <div class="col-md-4 mt-3">
+                    <label>Gender</label>
+                    <select name="gender" class="form-control">
+                        <option value="Male" {{ $dataPelanggan->gender == 'Male' ? 'selected' : '' }}>Male</option>
+                        <option value="Female" {{ $dataPelanggan->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                        <option value="Other" {{ $dataPelanggan->gender == 'Other' ? 'selected' : '' }}>Other</option>
+                    </select>
+                </div>
 
+                <div class="col-md-4 mt-3">
+                    <label>Phone</label>
+                    <input type="text" name="phone" value="{{ $dataPelanggan->phone }}" class="form-control">
+                </div>
 
-                                    <!-- Buttons -->
-                                    <div class="">
-                                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                        <a href="{{ route('user.index') }}" class="btn btn-outline-secondary ms-2">Batal</a name="submit">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                <div class="col-md-12 mt-3">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ $dataPelanggan->email }}" class="form-control">
+                </div>
+
+                <div class="col-md-12 mt-4">
+                    <label>Upload Foto (Multiple)</label>
+                    <input type="file" name="photos[]" multiple class="form-control">
+                </div>
+
+                <div class="col-md-12 mt-3">
+                    <label>Foto Saat Ini:</label>
+                    <div class="d-flex gap-3">
+                        @if ($dataPelanggan->photos)
+                            @foreach ($dataPelanggan->photos as $foto)
+                                <img src="{{ asset($foto) }}" width="100" class="rounded">
+                            @endforeach
+                        @else
+                            <p class="text-muted">Tidak ada foto.</p>
+                        @endif
                     </div>
 
                 </div>
             </div>
-        </div>
+
+            <button class="btn btn-primary mt-4">Update</button>
+        </form>
+    </div>
 @endsection

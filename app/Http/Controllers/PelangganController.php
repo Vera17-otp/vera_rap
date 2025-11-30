@@ -11,12 +11,14 @@ class PelangganController extends Controller
      */
     public function index(Request $request)
     {
-        $filterableColumns =['Gender'];
-        $searchTableColumns = ['first_name'];
-        $pageData['dataPelanggan']= Pelanggan::filter($request, $filterableColumns)
-					->search($request, $searchTableColumns)
-					->paginate(10)
-					->withQueryString();
+        $filterableColumns = ['gender'];
+        $searchableColumns = ['first_name', 'last_name', 'email'];
+
+        $pageData['dataPelanggan'] = Pelanggan::filter($request, $filterableColumns)
+            ->search($request, $searchableColumns)
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.pelanggan.index', $pageData);
     }
 
@@ -32,48 +34,33 @@ class PelangganController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-$pesan = [
-        'first_name.required' => 'First name wajib diisi.',
-        'last_name.required'  => 'Last name wajib diisi.',
-        'birthday.required'   => 'Birthday wajib diisi.',
-        'birthday.date'       => 'Birthday harus berupa tanggal yang valid.',
-        'gender.required'     => 'Gender wajib diisi.',
-        'gender.in'           => 'Gender hanya boleh diisi dengan Male atau Female.',
-        'email.required'      => 'Email wajib diisi.',
-        'email.email'         => 'Email harus berupa alamat email yang valid.',
-        'phone.required'      => 'Phone wajib diisi.',
-        'phone.numeric'       => 'Phone harus berupa angka.',
-    ];
+    {
+        // VALIDASI DASAR saja
+        $request->validate([
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'email'      => 'required|email',
+        ]);
 
-    $request->validate([
-        'first_name' => 'required|string',
-        'last_name'  => 'required|string',
-        'birthday'   => 'required|date',
-        'gender'     => 'required|in:Male,Female',
-        'email'      => 'required|email',
-        'phone'      => 'required|numeric',
-    ], $pesan);
+        $data['first_name'] = $request->first_name;
+        $data['last_name']  = $request->last_name;
+        $data['birthday']   = date('Y-m-d', strtotime($request->birthday));
+        $data['gender']     = $request->gender;
+        $data['email']      = $request->email;
+        $data['phone']      = $request->phone;
 
-    $data['first_name'] = $request->first_name;
-    $data['last_name']  = $request->last_name;
-    $data['birthday']   = $request->birthday;
-    $data['gender']     = $request->gender;
-    $data['email']      = $request->email;
-    $data['phone']      = $request->phone;
+        Pelanggan::create($data);
 
-    Pelanggan::create($data);
-
-    return redirect()->route('pelanggan.index')->with('success', 'Penambahan Data Berhasil!');
-}
-
+        return redirect()->route('pelanggan.index')->with('success', 'Penambahan Data Berhasil!');
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        $data['dataPelanggan'] = Pelanggan::findOrFail($id);
+        return view('admin.pelanggan.show', $data);
     }
 
     /**
@@ -88,20 +75,46 @@ $pesan = [
     /**
      * Update the specified resource in storage.
      */
-    public function update (Request $request, string $id)
+    public function update(Request $request, string $id)
     {
-        $pelanggan_id = $id;
-        $pelanggan    = Pelanggan::findOrFail($pelanggan_id);
+        $pelanggan = Pelanggan::findOrFail($id);
 
+        // Validasi foto multiple
+        $request->validate([
+            'photos.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // Update data biasa
         $pelanggan->first_name = $request->first_name;
         $pelanggan->last_name  = $request->last_name;
-        $pelanggan->birthday   = $request->birthday;
+        $pelanggan->birthday   = date('Y-m-d', strtotime($request->birthday));
         $pelanggan->gender     = $request->gender;
         $pelanggan->email      = $request->email;
         $pelanggan->phone      = $request->phone;
 
+        // Foto lama (kalau ada)
+        $oldPhotos = $pelanggan->photos ?? [];
+
+        // Upload foto baru jika ada
+        if ($request->hasFile('photos')) {
+            $newPhotos = [];
+
+            foreach ($request->file('photos') as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+
+                // SIMPAN FOTO KE PUBLIC/PELANGGAN
+                $file->move(public_path('pelanggan'), $filename);
+                $newPhotos[] = 'pelanggan/' . $filename;
+            }
+
+            // Gabungkan foto lama + baru
+            $pelanggan->photos = array_merge($oldPhotos, $newPhotos);
+        }
+
         $pelanggan->save();
-        return redirect()->route('pelanggan.index')->with('success', 'Perubahan Data Berhasil!');
+
+        return redirect()->route('pelanggan.edit', $id)
+            ->with('success', 'Data pelanggan & foto berhasil diperbarui!');
     }
 
     /**
@@ -109,9 +122,9 @@ $pesan = [
      */
     public function destroy(string $id)
     {
-        $pelanggan    = Pelanggan::findOrFail($id);
+        $pelanggan = Pelanggan::findOrFail($id);
         $pelanggan->delete();
 
-        return redirect()->route('pelanggan.index')->with('success', 'Data Berhasil Dihapus');
+        return redirect()->route('pelanggan.index')->with('success', 'Data berhasil dihapus!');
     }
 }

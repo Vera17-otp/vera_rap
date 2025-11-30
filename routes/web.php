@@ -10,52 +10,41 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\MatakuliahController;
 
+// ===============================
+// DASHBOARD (gunakan 1 route SAJA)
+// ===============================
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
-
+// ===============================
+// RESOURCE ROUTES
+// ===============================
+Route::resource('pelanggan', PelangganController::class);
 Route::resource('user', UserController::class);
 
+// Delete file pelanggan
+Route::delete('/pelanggan/{pelanggan_id}/file/{file_id}',
+    [PelangganController::class, 'deleteFile']
+)->name('pelanggan.deleteFile');
+
+// ===============================
+// ROUTE LAIN
+// ===============================
 Route::get('/', function () {
     return view('welcome');
-
 });
 
-Route::get('/pcr', function () {
-    return 'Selamat Datang di Website Kampus PCR!';
-});
+Route::get('/pcr', fn() => 'Selamat Datang di Website Kampus PCR!');
+Route::get('/mahasiswa', fn() => 'Halo Mahasiswa')->name('mahasiswa.show');
 
-Route::get('/mahasiswa', function () {
-    return 'Halo Mahasiswa';
-})->name('mahasiswa.show');
+Route::get('/nama/{param1}', fn($param1) => 'Nama saya: '.$param1);
+Route::get('/nim/{param1?}', fn($param1 = '') => 'NIM saya: '.$param1);
 
-Route::get('/nama/{param1}', function ($param1) {
-    return 'Nama saya: '.$param1;
-});
+Route::get('/mahasiswa/{param1}', [MahasiswaController::class,'show']);
+Route::get('/matakuliah/{param1}', [MatakuliahController::class,'show']);
 
-Route::get('/nim/{param1?}', function ($param1 = '') {
-    return 'NIM saya: '.$param1;
-});
-
-Route ::get('/mahasiswa/{param1}', [MahasiswaController::class,'show']);
-Route ::get('/matakuliah/{param1}', [MatakuliahController::class,'show']);
-
-Route::get('/about', function () {
-    return view('halaman-about');
-});
-route::get('/home', [HomeController::class,'index'])->name('home');
-route::get('/pegawai', [PegawaiController::class,'index']);
+Route::get('/about', fn() => view('halaman-about'));
+Route::get('/home', [HomeController::class,'index'])->name('home');
+Route::get('/pegawai', [PegawaiController::class,'index']);
 
 Route::post('question/store', [QuestionController::class, 'store'])
-		->name('question.store');
-
-route::get('dashboard', [DashboardController::class, 'index'])->name('Dashboard');
-route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-Route::resource('pelanggan', PelangganController::class);
-
-Route::resource('user', UserController::class);
-
-
-
-
+    ->name('question.store');

@@ -32,9 +32,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data['name']     = $request->name;
-        $data['email']    = $request->email;
+        $data['name'] = $request->name;
+        $data['email'] = $request->email;
         $data['password'] = Hash::make($request->password);
+
+        // Upload foto jika ada
+        if ($request->hasFile('profile_picture')) {
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('uploads/profile/', $filename, 'public');
+            $data['profile_picture'] = $filename;
+        } else {
+            $data['profile_picture'] = null;
+        }
 
         User::create($data);
 
@@ -66,17 +76,34 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
+        // Upload foto
+        if ($request->hasFile('profile_picture')) {
+
+            // hapus lama
+            if ($user->profile_picture && file_exists(storage_path('app/public/uploads/profile/'.$user->profile_picture))) {
+                unlink(storage_path('app/public/uploads/profile/'.$user->profile_picture));
+            }
+
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('uploads/profile/', $filename, 'public');
+            $user->profile_picture = $filename;
+
+        }
+
         $user->save();
 
         return redirect()->route('user.index')->with('success', 'Perubahan Data Berhasil!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
+
+        if ($user->profile_picture && file_exists(storage_path('app/public/uploads/profile/'.$user->profile_picture))) {
+            unlink(storage_path('app/public/uploads/profile/'.$user->profile_picture));
+        }
+
         $user->delete();
 
         return redirect()->route('user.index')->with('success', 'Data Berhasil Dihapus');
