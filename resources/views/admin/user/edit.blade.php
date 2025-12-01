@@ -33,10 +33,10 @@
 
                 <div class="col-md-4 mt-3">
                     <label>Gender</label>
-                    <select name="gender" class="form-control">
-                        <option value="Male" {{ $dataPelanggan->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                        <option value="Female" {{ $dataPelanggan->gender == 'Female' ? 'selected' : '' }}>Female</option>
-                        <option value="Other" {{ $dataPelanggan->gender == 'Other' ? 'selected' : '' }}>Other</option>
+                    <select name="role" class="form-control">
+                        <option value="Super Admin" {{ $dataPelanggan->role == 'Super Admin' ? 'selected' : '' }}>Super Admin</option>
+                        <option value="Pelanggan" {{ $dataPelanggan->role == 'Pelanggan' ? 'selected' : '' }}>Pelanggan</option>
+                        <option value="Mitra" {{ $dataPelanggan->role == 'Mitra' ? 'selected' : '' }}>Mitra</option>
                     </select>
                 </div>
 
